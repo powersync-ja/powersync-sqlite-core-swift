@@ -1,0 +1,46 @@
+on:
+  repository_dispatch:
+    types: [spm-release]
+name: "release"
+jobs:
+  release:
+    name: Release SPM package
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+
+      # For SPM package
+      # We use peter-evans/repository-dispatch to receive the release event information in client_payload
+      #  "repository"
+      #  "title"
+      #  "tag"
+      #  "checksum"
+      #  "fileName"
+      # For more information see https://github.com/powersync-ja/powersync-sqlite-core/blob/aa09d5dc499bf8d5be383ad95d58cba410ceade7/.github/workflows/release.yml#L76
+      - name: Update Package.swift with information from powersync-sqlite-core release
+        run: |
+          sed -i '' \
+            -e "s|url: \".*\"|url: \"https://github.com/${{ github.event.client_payload.repository }}/releases/download/${{ github.event.client_payload.tag }}/${{ github.event.client_payload.fileName }}\"|" \
+            -e "s|checksum: \".*\"|checksum: \"${{ github.event.client_payload.checksum }}\"|" \
+            Package.swift
+
+      - name: Commit and push updated Package.swift
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add Package.swift
+          git commit -m "Release ${{ github.event.client_payload.tag }}"
+          git push
+
+      - uses: ncipollo/release-action@v1
+        with:
+          name: ${{ github.event.client_payload.title }}
+          tag: ${{ github.event.client_payload.tag }}
+          body: >
+            Review the changes made in the
+            [PowerSync SQLite Core release](https://github.com/${{ github.event.client_payload.repository }}/releases/tag/${{ github.event.client_payload.tag }})
+            associated with this version.
