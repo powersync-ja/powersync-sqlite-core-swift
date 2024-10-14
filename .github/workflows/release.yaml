@@ -41,6 +41,6 @@ jobs:
           name: ${{ github.event.client_payload.title }}
           tag: ${{ github.event.client_payload.tag }}
           body: >
-            Check out the changes made in the
+            Review the changes made in the
             [PowerSync SQLite Core release](https://github.com/${{ github.event.client_payload.repository }}/releases/tag/${{ github.event.client_payload.tag }})
             associated with this version.
