@@ -17,8 +17,8 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: packageName,
-            url: "https://github.com/powersync-ja/powersync-sqlite-core/releases/download/v0.3.11/powersync-sqlite-core.xcframework.zip",
-            checksum: "6bae32a713ab7372097804e3209eac56f0c81090269426c7af8a25f582dff5c0"
+            url: "https://github.com/powersync-ja/powersync-sqlite-core/releases/download/v0.3.12/powersync-sqlite-core.xcframework.zip",
+            checksum: "0d392c297c2c9e5c1d91ced41561a842012ba7282aece417a2b5665347a26461"
         )
     ]
 )
